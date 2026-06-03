@@ -7,7 +7,9 @@ Build or select a Windows dictation tool that turns speech into text anywhere on
 Phase 1 delivered the local Windows implementation. Phase 2 extends the project
 from a local utility into an installable package that ordinary users can run on
 Windows, Ubuntu, Debian, and Fedora while preserving the same local-first privacy
-and low-idle-resource principles.
+and low-idle-resource principles. A later multilingual phase will add Bangla
+dictation that can preserve English words naturally when they appear inside
+Bangla speech.
 
 The ideal user experience is:
 
@@ -76,7 +78,7 @@ The user values privacy, low idle resource usage, predictable hotkeys, and stron
 
 ```text
 Primary model: faster-whisper large-v3 (CUDA, float16), forced to English for the current milestone
-Later language expansion: Bangla and mixed English/Bangla are deferred
+Later language expansion: Bangla with English words mixed into Bangla speech
 Speed model candidate: NVIDIA Parakeet TDT v3 for a future English-only fast mode
 Device: CUDA
 Compute: float16 first, int8_float16 only if VRAM pressure matters
@@ -96,7 +98,8 @@ before the English dictation workflow is stable.
 
 Decision: default to **faster-whisper large-v3** on CUDA with `float16` for the
 validated local implementation. Revisit **Parakeet** later as an optional
-English-only speed mode, and revisit Bangla/mixed speech as a separate phase.
+English-only speed mode, and revisit Bangla with mixed English words as a
+separate multilingual phase.
 
 ## Current Candidate Paths
 
@@ -186,7 +189,7 @@ Still requires user confirmation:
 
 Deferred:
 
-- Bangla or mixed English/Bangla speech from the user's microphone.
+- Bangla or mixed Bangla/English speech from the user's microphone.
 
 ## Next Phase: Packaging And Distribution
 
@@ -211,6 +214,47 @@ Packaging work must preserve the `v0.1-stable` behavior. It should focus on:
 
 This phase should not add new dictation features unless needed to make the
 stable app installable and supportable across those platforms.
+
+## Later Phase: Bangla With Embedded English
+
+After packaging and distribution are stable, add a multilingual dictation phase
+focused on Bangla speech that naturally contains English words, names, product
+terms, code terms, and short English phrases.
+
+The target behavior is:
+
+```text
+User speaks mostly Bangla
+-> English words inside the Bangla sentence are preserved as English
+-> Bangla output remains readable and correctly segmented
+-> insertion behavior stays the same as the English workflow
+```
+
+Examples of the kind of speech this phase should support:
+
+```text
+Bangla sentence with app names like ChatGPT, VS Code, GitHub
+Bangla sentence with technical words like API, server, package, commit
+Bangla sentence with product names, people names, and short English phrases
+```
+
+This phase should evaluate:
+
+- Whisper `language = None` auto-detection versus explicit Bangla mode.
+- Faster-whisper large-v3 accuracy for Bangla with embedded English.
+- Whether post-processing should be language-aware.
+- Punctuation behavior for Bangla and mixed English text.
+- Keyboard/font/rendering behavior in common target apps.
+- Regression risk to the English-only workflow.
+
+Acceptance criteria:
+
+- English-only dictation remains at least as reliable as `v0.1-stable`.
+- Bangla dictation produces readable Bangla text from real user speech.
+- Embedded English words are not unnecessarily transliterated or corrupted.
+- Mixed Bangla/English insertion works in the same target apps as English.
+- The language mode is configurable so users can choose English-only, Bangla,
+  or mixed/auto mode.
 
 ## Decision Standard
 
