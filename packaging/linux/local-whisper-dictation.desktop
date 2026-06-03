@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Local Whisper Dictation
+Comment=Local faster-whisper dictation
+Exec=local-dictation run
+Terminal=false
+Categories=Utility;AudioVideo;Accessibility;
+StartupNotify=false

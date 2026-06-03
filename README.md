@@ -1,6 +1,8 @@
 # Local Whisper Dictation
 
-Windows tray dictation app for local speech-to-text.
+Local tray dictation app for speech-to-text. The stable baseline is currently
+validated on Windows; Linux packaging for Ubuntu, Debian, and Fedora is in
+progress.
 
 Default behavior:
 
@@ -103,6 +105,53 @@ dist\LocalWhisperDictation\LocalWhisperDictation.exe
 dist\LocalWhisperDictationConsole\LocalWhisperDictationConsole.exe
 ```
 
+## Installable Packages
+
+Packaging assets live under:
+
+```text
+packaging\
+```
+
+Windows current-user install:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\build.ps1
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\install_current_user.ps1 -StartWithWindows
+```
+
+Windows uninstall:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\uninstall_current_user.ps1
+```
+
+Debian/Ubuntu package build on Linux:
+
+```sh
+./packaging/linux/build_wheelhouse.sh
+./packaging/linux/build_deb.sh
+```
+
+Fedora package build on Linux:
+
+```sh
+./packaging/linux/build_wheelhouse.sh
+./packaging/linux/build_rpm.sh
+```
+
+Linux packages install the app under `/opt/local-whisper-dictation` and expose:
+
+```sh
+local-dictation run
+local-dictation diagnostics
+local-dictation --version
+```
+
+The Linux package layer is ready for target-OS validation. Desktop hotkeys,
+focused-app insertion, tray behavior, microphone access, and CUDA runtime setup
+must still be verified on the target desktop environments.
+
 ## Start With Windows
 
 ```powershell
@@ -129,10 +178,28 @@ Settings are stored under:
 %APPDATA%\LocalWhisperDictation\settings.json
 ```
 
+On Linux, settings are stored under:
+
+```text
+$XDG_CONFIG_HOME/LocalWhisperDictation/settings.json
+```
+
+or, when `XDG_CONFIG_HOME` is not set:
+
+```text
+~/.config/LocalWhisperDictation/settings.json
+```
+
 Runtime logs are written under:
 
 ```text
 %APPDATA%\LocalWhisperDictation\app.log
+```
+
+On Linux, logs use the same config directory:
+
+```text
+~/.config/LocalWhisperDictation/app.log
 ```
 
 Current default language:

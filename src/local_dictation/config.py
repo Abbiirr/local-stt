@@ -58,7 +58,12 @@ def config_dir() -> Path:
     base = os.environ.get("APPDATA")
     if base:
         return Path(base) / APP_NAME
-    return Path.home() / f".{APP_NAME.lower()}"
+
+    xdg_config_home = os.environ.get("XDG_CONFIG_HOME")
+    if xdg_config_home:
+        return Path(xdg_config_home) / APP_NAME
+
+    return Path.home() / ".config" / APP_NAME
 
 
 def default_config_path() -> Path:

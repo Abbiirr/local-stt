@@ -2,8 +2,9 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-from local_dictation.config import AppConfig, load_config, resolve_model_name, save_config
+from local_dictation.config import AppConfig, config_dir, load_config, resolve_model_name, save_config
 
 
 class ConfigTests(unittest.TestCase):
@@ -42,6 +43,14 @@ class ConfigTests(unittest.TestCase):
             path.write_text(json.dumps({"model_name": "tiny"}), encoding="utf-8-sig")
             loaded = load_config(path)
             self.assertEqual(loaded.model_name, "tiny")
+
+    def test_config_dir_uses_appdata_on_windows(self):
+        with patch.dict("os.environ", {"APPDATA": r"C:\Users\me\AppData\Roaming"}, clear=True):
+            self.assertEqual(config_dir(), Path(r"C:\Users\me\AppData\Roaming") / "LocalWhisperDictation")
+
+    def test_config_dir_uses_xdg_config_home_without_appdata(self):
+        with patch.dict("os.environ", {"XDG_CONFIG_HOME": "/tmp/config"}, clear=True):
+            self.assertEqual(config_dir(), Path("/tmp/config") / "LocalWhisperDictation")
 
     def test_resolve_model_name_uses_local_large_v3_when_present(self):
         expected = Path.cwd() / "models" / "faster-whisper-large-v3"

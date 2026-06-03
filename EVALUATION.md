@@ -95,7 +95,7 @@ validation are deferred to a later milestone.
 | Dependency install | Pass | `pip install -r requirements.txt` completed. |
 | Editable package install | Pass | `pip install -e .` completed. |
 | Syntax compile | Pass | `python -m compileall -q src tests`. |
-| Unit tests | Pass | `23 tests` passed. |
+| Unit tests | Pass | `25 tests` passed. |
 | Diagnostics | Pass | CUDA device and microphone reported. |
 | CUDA tiny smoke test | Pass | `tiny` loaded on CUDA with `float16`. |
 | CUDA large-v3 smoke test | Pass | Local `large-v3` loaded on CUDA with `float16`. |
@@ -117,14 +117,20 @@ validation are deferred to a later milestone.
 | Direct WAV transcription | Pass | Generated English WAV matched expected text exactly. |
 | Synthetic non-speech | Pass | 5-second silence and white-noise clips produced no transcript. |
 | 60-second generated latency | Pass | 60.00s repeated WAV transcribed in 56.31s, 1.07x realtime including model load. |
+| CLI version | Pass | `python -m local_dictation --version` prints `local-dictation 0.1.0`. |
+| Python wheel package | Pass | `pip wheel --no-deps . -w build\wheel-smoke` built `local_whisper_dictation-0.1.0-py3-none-any.whl`. |
+| Windows install script syntax | Pass | PowerShell AST parser accepted `packaging\windows\*.ps1`. |
+| Windows current-user install | Pass | Copied onedir build to `%LOCALAPPDATA%\Programs\LocalWhisperDictation` and created Start Menu shortcut. |
+| Linux package script syntax | Not run here | Local `bash.exe` is a broken WSL shim; validate on Ubuntu/Debian/Fedora. |
 
 ## Current Verdict
 
 The implementation works for the local model, CUDA, microphone capture,
-transcription engine, tray startup, packaging, startup shortcut, hotkey
+transcription engine, tray startup, Windows packaging/install, startup shortcut, hotkey
 start/cancel, paste insertion path, local model resolution, and safer text
 post-processing defaults.
 
-Remaining validation is user-interactive: real spoken dictation into the target
-apps, one-minute live tray latency, real-room silence/noise behavior, and
+Remaining validation is Linux-target and user-interactive: `.deb` build/install
+on Ubuntu/Debian, `.rpm` build/install on Fedora, real spoken dictation into the
+target apps, one-minute live tray latency, real-room silence/noise behavior, and
 confirmation after the next reboot.

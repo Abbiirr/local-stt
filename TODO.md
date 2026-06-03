@@ -22,12 +22,12 @@ archive\2026-06-03-v0.1-stable-lock\TODO.archived.md
 
 ## Packaging Plan
 
-- [ ] Define package targets for Windows, Ubuntu, Debian, and Fedora.
-- [ ] Decide Linux install format: `.deb`, `.rpm`, `pipx`, app directory, or a combination.
-- [ ] Decide whether to keep PyInstaller for Linux or use native Python packaging.
-- [ ] Define model download/cache behavior per OS.
+- [x] Define package targets for Windows, Ubuntu, Debian, and Fedora.
+- [x] Decide Linux install format: `.deb`, `.rpm`, `pipx`, app directory, or a combination.
+- [x] Decide whether to keep PyInstaller for Linux or use native Python packaging.
+- [x] Define model download/cache behavior per OS.
 - [ ] Define CUDA dependency expectations per OS.
-- [ ] Define settings/log paths per OS.
+- [x] Define settings/log paths per OS.
 - [ ] Define startup/autostart setup per OS.
 - [ ] Define uninstall path per OS.
 
@@ -43,15 +43,15 @@ archive\2026-06-03-v0.1-stable-lock\TODO.archived.md
 ## Release Engineering
 
 - [x] Add a version marker for `v0.1-stable`.
-- [ ] Add release artifact naming convention.
-- [ ] Add packaging scripts for selected formats.
+- [x] Add release artifact naming convention.
+- [x] Add packaging scripts for selected formats.
 - [ ] Add release checklist.
 - [ ] Add smoke-test script for release artifacts.
 - [ ] Add documentation for install, update, and uninstall.
 
 ## Validation Matrix
 
-- [ ] Windows package validation.
+- [x] Windows package validation.
 - [ ] Ubuntu package validation.
 - [ ] Debian package validation.
 - [ ] Fedora package validation.

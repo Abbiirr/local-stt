@@ -4,6 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from . import __version__
 from .config import load_config, save_config
 from .diagnostics import (
     collect_diagnostics,
@@ -17,8 +18,9 @@ from .diagnostics import (
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="local-dictation",
-        description="Local Windows tray dictation with faster-whisper.",
+        description="Local tray dictation with faster-whisper.",
     )
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     subparsers = parser.add_subparsers(dest="command")
 
     subparsers.add_parser("run", help="Start the tray app.")

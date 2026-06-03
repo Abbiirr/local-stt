@@ -54,7 +54,10 @@ local directory exists.
 - Global hotkey start/cancel cycle works without crash.
 - Startup shortcut exists.
 - No established TCP connections were observed during local large-v3 transcription.
-- Unit tests: 23 passed.
+- Python package wheel smoke builds successfully.
+- Windows current-user installer copies the onedir build to `%LOCALAPPDATA%\Programs\LocalWhisperDictation`.
+- Windows current-user installer creates a Start Menu shortcut.
+- Unit tests: 25 passed.
 
 ## Not Fully Automatable Here
 
@@ -64,6 +67,7 @@ local directory exists.
 - Real-room silence/noise behavior through the tray workflow.
 - Clean reboot startup confirmation.
 - Admin firewall-block proof, because firewall rule creation returned `Access is denied`.
+- Linux `.deb` and `.rpm` package builds, because this machine does not have a working Linux shell/package toolchain.
 
 Deferred to a later milestone:
 

@@ -24,6 +24,46 @@ Output: paste into focused app with clipboard restore
 
 Record results in `EVALUATION.md`.
 
+## Packaging Preflight
+
+Windows:
+
+```powershell
+.\.venv\Scripts\python.exe -m local_dictation --version
+.\.venv\Scripts\python.exe -m pip wheel --no-deps . -w build\wheel-smoke
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\build.ps1
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\install_current_user.ps1
+```
+
+Linux Debian/Ubuntu:
+
+```sh
+./packaging/linux/build_wheelhouse.sh
+./packaging/linux/build_deb.sh
+sudo apt install ./dist/local-whisper-dictation_0.1.0_amd64.deb
+local-dictation --version
+local-dictation diagnostics
+```
+
+Linux Fedora:
+
+```sh
+./packaging/linux/build_wheelhouse.sh
+./packaging/linux/build_rpm.sh
+sudo dnf install ./dist/local-whisper-dictation-0.1.0-*.noarch.rpm
+local-dictation --version
+local-dictation diagnostics
+```
+
+Pass criteria:
+
+- [ ] Windows installer places files under `%LOCALAPPDATA%\Programs\LocalWhisperDictation`.
+- [ ] Windows Start Menu shortcut exists.
+- [ ] Debian/Ubuntu package installs and removes cleanly.
+- [ ] Fedora package installs and removes cleanly.
+- [ ] `local-dictation --version` reports `0.1.0` on every package target.
+- [ ] `local-dictation diagnostics` reports expected platform, audio, and CUDA state.
+
 ## 1. Preconditions
 
 - [ ] Record OS version:

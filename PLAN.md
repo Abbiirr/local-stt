@@ -46,13 +46,13 @@ The immediate goal is distribution readiness, not new dictation features.
 
 ## Phase 2.2: Packaging Strategy
 
-- [ ] Decide supported install formats per OS.
-- [ ] Windows: keep PyInstaller `--onedir` first; evaluate installer wrapper later.
-- [ ] Ubuntu/Debian: evaluate `.deb`, `pipx`, and app directory approaches.
-- [ ] Fedora: evaluate `.rpm`, `pipx`, and app directory approaches.
-- [ ] Decide whether Linux packages bundle faster-whisper dependencies or install
+- [x] Decide supported install formats per OS.
+- [x] Windows: keep PyInstaller `--onedir` first; add a current-user install script.
+- [x] Ubuntu/Debian: use `.deb` first with an `/opt/local-whisper-dictation` app layout.
+- [x] Fedora: use `.rpm` first with the same `/opt/local-whisper-dictation` app layout.
+- [x] Decide whether Linux packages bundle faster-whisper dependencies or install
   them into an isolated environment.
-- [ ] Decide model download/cache strategy for each OS.
+- [x] Decide model download/cache strategy for each OS.
 
 ## Phase 2.3: Cross-Platform Compatibility Audit
 
@@ -70,14 +70,15 @@ The immediate goal is distribution readiness, not new dictation features.
 - [ ] Provide model download/check command for every supported OS.
 - [ ] Provide startup/autostart setup for Windows and Linux.
 - [ ] Provide uninstall instructions.
-- [ ] Document log and settings locations per OS.
+- [x] Document log and settings locations per OS.
 
 ## Phase 2.5: Release Validation
 
-- [ ] Build fresh Windows onedir artifact.
-- [ ] Verify packaged Windows startup.
-- [ ] Verify packaged Windows WAV transcription.
-- [ ] Verify settings/log creation.
+- [x] Build fresh Windows onedir artifact.
+- [x] Verify packaged Windows startup.
+- [x] Verify packaged Windows WAV transcription.
+- [x] Verify settings/log creation.
+- [x] Verify Windows current-user install script.
 - [ ] Add Linux CI or documented VM test matrix.
 - [ ] Run Ubuntu validation.
 - [ ] Run Debian validation.
