@@ -41,6 +41,7 @@ local directory exists.
 - Microphone smoke capture works.
 - Tray app starts and stays running.
 - Waveform/status overlay is draggable and has an `X` close control.
+- Waveform/status overlay has mouse `Pause`/`Resume` and `Stop` controls while recording.
 - Windowed packaged EXE starts and stays running.
 - Windowed packaged EXE is currently running from `dist\LocalWhisperDictation`.
 - Console packaged EXE runs diagnostics.
@@ -57,7 +58,7 @@ local directory exists.
 - Python package wheel smoke builds successfully.
 - Windows current-user installer copies the onedir build to `%LOCALAPPDATA%\Programs\LocalWhisperDictation`.
 - Windows current-user installer creates a Start Menu shortcut.
-- Unit tests: 25 passed.
+- Unit tests: 26 passed.
 
 ## Not Fully Automatable Here
 

@@ -15,6 +15,13 @@ Esc        = cancel current recording
 The waveform overlay can be dragged by holding the overlay body. Use the `X`
 button on the overlay to close it; while recording, this cancels the recording.
 While transcribing, it hides the overlay and lets transcription continue.
+While recording, the overlay also shows mouse controls:
+
+```text
+Pause  = temporarily discard incoming audio until resumed
+Resume = continue recording after pause
+Stop   = stop recording and start local transcription
+```
 
 The app records only while active. It uses `faster-whisper` with CUDA by default,
 targets `large-v3` with `float16` on an RTX 4060 Ti 16 GB, and forces English

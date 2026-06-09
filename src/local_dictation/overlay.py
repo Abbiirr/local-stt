@@ -9,18 +9,21 @@ from PySide6.QtWidgets import QApplication, QWidget
 
 class WaveOverlay(QWidget):
     close_requested = Signal()
+    stop_requested = Signal()
+    pause_requested = Signal()
 
     def __init__(self, fps: int = 30):
         super().__init__()
         self.levels = deque([0.0] * 80, maxlen=80)
         self.status = "Ready"
+        self.state = "idle"
         self.fps = max(1, fps)
         self._dragging = False
         self._drag_offset = QPoint()
         self._has_custom_position = False
         self._closed_by_user = False
 
-        self.setFixedSize(440, 112)
+        self.setFixedSize(520, 132)
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint
             | Qt.WindowType.WindowStaysOnTopHint
@@ -44,6 +47,10 @@ class WaveOverlay(QWidget):
         if not self.timer.isActive():
             self.timer.start(round(1000 / self.fps))
 
+    def set_state(self, state: str) -> None:
+        self.state = state
+        self.update()
+
     def hide_overlay(self) -> None:
         self.timer.stop()
         self.hide()
@@ -63,6 +70,15 @@ class WaveOverlay(QWidget):
     def _close_rect(self) -> QRect:
         return QRect(self.width() - 44, 18, 24, 24)
 
+    def _stop_rect(self) -> QRect:
+        return QRect(self.width() - 116, 92, 88, 28)
+
+    def _pause_rect(self) -> QRect:
+        return QRect(self.width() - 220, 92, 96, 28)
+
+    def _controls_visible(self) -> bool:
+        return self.state in {"recording", "paused"}
+
     def _global_position(self, event) -> QPoint:
         if hasattr(event, "globalPosition"):
             return event.globalPosition().toPoint()
@@ -79,6 +95,17 @@ class WaveOverlay(QWidget):
             self.close_requested.emit()
             event.accept()
             return
+
+        if self._controls_visible():
+            local_position = event.position().toPoint()
+            if self._stop_rect().contains(local_position):
+                self.stop_requested.emit()
+                event.accept()
+                return
+            if self._pause_rect().contains(local_position):
+                self.pause_requested.emit()
+                event.accept()
+                return
 
         self._dragging = True
         self._drag_offset = self._global_position(event) - self.frameGeometry().topLeft()
@@ -138,7 +165,7 @@ class WaveOverlay(QWidget):
         wave_left = 28
         wave_top = 48
         wave_width = self.width() - 56
-        wave_height = 42
+        wave_height = 32
         levels = list(self.levels)
         if not levels:
             return
@@ -159,3 +186,15 @@ class WaveOverlay(QWidget):
                 int(x),
                 int(center_y + height / 2),
             )
+
+        if self._controls_visible():
+            self._draw_button(painter, self._pause_rect(), "Resume" if self.state == "paused" else "Pause")
+            self._draw_button(painter, self._stop_rect(), "Stop")
+
+    def _draw_button(self, painter: QPainter, rect: QRect, text: str) -> None:
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setBrush(QColor(35, 42, 55, 230))
+        painter.drawRoundedRect(rect, 8, 8)
+
+        painter.setPen(QColor(236, 240, 248, 240))
+        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, text)

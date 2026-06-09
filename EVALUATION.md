@@ -95,7 +95,7 @@ validation are deferred to a later milestone.
 | Dependency install | Pass | `pip install -r requirements.txt` completed. |
 | Editable package install | Pass | `pip install -e .` completed. |
 | Syntax compile | Pass | `python -m compileall -q src tests`. |
-| Unit tests | Pass | `25 tests` passed. |
+| Unit tests | Pass | `26 tests` passed. |
 | Diagnostics | Pass | CUDA device and microphone reported. |
 | CUDA tiny smoke test | Pass | `tiny` loaded on CUDA with `float16`. |
 | CUDA large-v3 smoke test | Pass | Local `large-v3` loaded on CUDA with `float16`. |
@@ -121,6 +121,7 @@ validation are deferred to a later milestone.
 | Python wheel package | Pass | `pip wheel --no-deps . -w build\wheel-smoke` built `local_whisper_dictation-0.1.0-py3-none-any.whl`. |
 | Windows install script syntax | Pass | PowerShell AST parser accepted `packaging\windows\*.ps1`. |
 | Windows current-user install | Pass | Copied onedir build to `%LOCALAPPDATA%\Programs\LocalWhisperDictation` and created Start Menu shortcut. |
+| Overlay mouse controls | Pass, automated boundary | Unit test verifies paused audio is discarded until resume; packaged app starts after adding Pause/Resume/Stop controls. |
 | Linux package script syntax | Not run here | Local `bash.exe` is a broken WSL shim; validate on Ubuntu/Debian/Fedora. |
 
 ## Current Verdict

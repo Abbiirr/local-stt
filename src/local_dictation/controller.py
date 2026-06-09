@@ -28,6 +28,7 @@ class DictationController(QObject):
         self.inserter = TextInserter(config)
         self.recording = False
         self.transcribing = False
+        self.paused = False
         self._state_lock = threading.Lock()
 
         self.monitor_timer = QTimer(self)
@@ -56,12 +57,14 @@ class DictationController(QObject):
             if self.recording or self.transcribing:
                 return
             self.recording = True
+            self.paused = False
 
         try:
             self.recorder.start()
         except Exception as exc:
             with self._state_lock:
                 self.recording = False
+                self.paused = False
             self.logger.exception("Microphone start failed.")
             self.tray_message.emit(f"Microphone error: {exc}")
             return
@@ -74,6 +77,7 @@ class DictationController(QObject):
             if not self.recording:
                 return
             self.recording = False
+            self.paused = False
             self.transcribing = True
 
         try:
@@ -103,11 +107,31 @@ class DictationController(QObject):
             if not self.recording:
                 return
             self.recording = False
+            self.paused = False
 
         self.recorder.cancel()
         self.overlay_hide.emit()
         self.state_changed.emit("idle")
         self.tray_message.emit("Recording canceled.")
+
+    def toggle_pause_recording(self) -> None:
+        with self._state_lock:
+            if not self.recording or self.transcribing:
+                return
+            self.paused = not self.paused
+            paused = self.paused
+
+        if paused:
+            self.recorder.pause()
+            self.state_changed.emit("paused")
+            self.overlay_show.emit("Paused - click Resume or Stop")
+            self.tray_message.emit("Recording paused.")
+            return
+
+        self.recorder.resume()
+        self.state_changed.emit("recording")
+        self.overlay_show.emit("Recording - click Stop to transcribe")
+        self.tray_message.emit("Recording resumed.")
 
     def close_overlay(self) -> None:
         with self._state_lock:

@@ -55,8 +55,11 @@ def run_app() -> int:
     controller.overlay_hide.connect(overlay.hide_overlay)
     controller.overlay_level.connect(overlay.push_level)
     controller.app_quit.connect(app.quit)
+    controller.state_changed.connect(overlay.set_state)
     controller.state_changed.connect(lambda state: overlay.reset_user_close() if state == "recording" else None)
     overlay.close_requested.connect(controller.close_overlay)
+    overlay.stop_requested.connect(controller.stop_recording)
+    overlay.pause_requested.connect(controller.toggle_pause_recording)
     hotkeys.toggle.connect(controller.toggle_recording)
     hotkeys.cancel.connect(controller.cancel_recording)
 

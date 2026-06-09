@@ -28,10 +28,15 @@ class AudioRecorder:
         self._frames: list[np.ndarray] = []
         self._lock = threading.Lock()
         self._recording = False
+        self._paused = False
 
     @property
     def recording(self) -> bool:
         return self._recording
+
+    @property
+    def paused(self) -> bool:
+        return self._paused
 
     def start(self) -> None:
         if self._recording:
@@ -41,6 +46,7 @@ class AudioRecorder:
             self._frames = []
 
         self._recording = True
+        self._paused = False
         try:
             self._stream = sd.InputStream(
                 samplerate=self.config.sample_rate,
@@ -61,6 +67,7 @@ class AudioRecorder:
             return np.empty((0,), dtype=np.float32)
 
         self._recording = False
+        self._paused = False
         try:
             if self._stream:
                 self._stream.stop()
@@ -77,6 +84,7 @@ class AudioRecorder:
 
     def cancel(self) -> None:
         self._recording = False
+        self._paused = False
         try:
             if self._stream:
                 self._stream.stop()
@@ -92,8 +100,23 @@ class AudioRecorder:
         time.sleep(max(0.0, seconds))
         return self.stop()
 
+    def pause(self) -> None:
+        if self._recording:
+            self._paused = True
+            if self.level_callback:
+                self.level_callback(0.0)
+
+    def resume(self) -> None:
+        if self._recording:
+            self._paused = False
+
     def _callback(self, indata, frames, time_info, status) -> None:
         if not self._recording:
+            return
+
+        if self._paused:
+            if self.level_callback:
+                self.level_callback(0.0)
             return
 
         data = indata.copy()
