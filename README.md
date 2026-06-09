@@ -86,6 +86,13 @@ To validate the default model from Hugging Face cache or local model path:
 .\.venv\Scripts\python.exe -m local_dictation smoke-cuda --model large-v3
 ```
 
+The model loader is config-driven. To validate whichever device/compute profile
+is active:
+
+```powershell
+.\.venv\Scripts\python.exe -m local_dictation smoke-model --model tiny
+```
+
 This can take a while on the first run because the model is several GB.
 
 To measure model-only latency without using the microphone:
@@ -124,7 +131,14 @@ Windows current-user install:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\packaging\windows\build.ps1
-powershell -ExecutionPolicy Bypass -File .\packaging\windows\install_current_user.ps1 -StartWithWindows
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\install_current_user.ps1 -Edition gpu -StartWithWindows
+```
+
+Windows CPU current-user install:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\build.ps1
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\install_current_user.ps1 -Edition cpu
 ```
 
 Windows uninstall:
@@ -158,6 +172,74 @@ local-dictation --version
 The Linux package layer is ready for target-OS validation. Desktop hotkeys,
 focused-app insertion, tray behavior, microphone access, and CUDA runtime setup
 must still be verified on the target desktop environments.
+
+## Windows ZIP Distribution
+
+The app is distributed as a folder, not as one standalone EXE. To create ZIPs:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\build.ps1
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\create_distribution_zip.ps1 -Edition gpu
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\create_distribution_zip.ps1 -Edition cpu
+```
+
+Outputs:
+
+```text
+dist\releases\LocalWhisperDictation-gpu.zip
+dist\releases\LocalWhisperDictation-cpu.zip
+```
+
+Recipients should extract the ZIP and run:
+
+```text
+Run Local Whisper Dictation.bat
+```
+
+The launcher forces the packaged `settings.json`, so the CPU edition uses CPU
+settings even if the user previously had GPU settings elsewhere.
+
+GPU edition profile:
+
+```json
+{
+  "model_name": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16"
+}
+```
+
+CPU edition profile:
+
+```json
+{
+  "model_name": "small.en",
+  "device": "cpu",
+  "compute_type": "int8",
+  "beam_size": 1
+}
+```
+
+To swap models, edit `settings.json` and change `model_name`, `device`, and
+`compute_type`. Local faster-whisper model folders are resolved from:
+
+```text
+models\faster-whisper-<model_name>
+```
+
+Examples:
+
+```text
+models\faster-whisper-small.en
+models\faster-whisper-base.en
+models\faster-whisper-large-v3
+```
+
+To download a model into the project-local `models` folder:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\download_model.ps1 -ModelName small.en
+```
 
 ## Start With Windows
 

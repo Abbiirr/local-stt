@@ -95,7 +95,7 @@ validation are deferred to a later milestone.
 | Dependency install | Pass | `pip install -r requirements.txt` completed. |
 | Editable package install | Pass | `pip install -e .` completed. |
 | Syntax compile | Pass | `python -m compileall -q src tests`. |
-| Unit tests | Pass | `26 tests` passed. |
+| Unit tests | Pass | `30 tests` passed. |
 | Diagnostics | Pass | CUDA device and microphone reported. |
 | CUDA tiny smoke test | Pass | `tiny` loaded on CUDA with `float16`. |
 | CUDA large-v3 smoke test | Pass | Local `large-v3` loaded on CUDA with `float16`. |
@@ -122,6 +122,9 @@ validation are deferred to a later milestone.
 | Windows install script syntax | Pass | PowerShell AST parser accepted `packaging\windows\*.ps1`. |
 | Windows current-user install | Pass | Copied onedir build to `%LOCALAPPDATA%\Programs\LocalWhisperDictation` and created Start Menu shortcut. |
 | Overlay mouse controls | Pass, automated boundary | Unit test verifies paused audio is discarded until resume; packaged app starts after adding Pause/Resume/Stop controls. |
+| Model-agnostic profiles | Pass | GPU and CPU profile JSON files load through `AppConfig`; packaged app can read edition-local `settings.json`. |
+| Windows CPU/GPU ZIPs | Pass | Created `dist\releases\LocalWhisperDictation-cpu.zip` and `dist\releases\LocalWhisperDictation-gpu.zip`, each with edition-local settings and launcher. |
+| CPU transcription runtime | Not run | `small.en` CPU model is not downloaded/validated on this machine yet. |
 | Linux package script syntax | Not run here | Local `bash.exe` is a broken WSL shim; validate on Ubuntu/Debian/Fedora. |
 
 ## Current Verdict

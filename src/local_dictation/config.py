@@ -70,8 +70,30 @@ def default_config_path() -> Path:
     return config_dir() / "settings.json"
 
 
+def app_local_config_path() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent / "settings.json"
+    return Path.cwd() / "settings.json"
+
+
+def effective_config_path() -> Path:
+    env_config = os.environ.get("LOCAL_DICTATION_CONFIG")
+    if env_config:
+        return Path(env_config).expanduser()
+
+    user_config = default_config_path()
+    if user_config.exists():
+        return user_config
+
+    local_config = app_local_config_path()
+    if local_config.exists():
+        return local_config
+
+    return user_config
+
+
 def load_config(path: Path | None = None) -> AppConfig:
-    target = path or default_config_path()
+    target = path or effective_config_path()
     if not target.exists():
         return AppConfig()
 

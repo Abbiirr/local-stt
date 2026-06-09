@@ -58,7 +58,9 @@ local directory exists.
 - Python package wheel smoke builds successfully.
 - Windows current-user installer copies the onedir build to `%LOCALAPPDATA%\Programs\LocalWhisperDictation`.
 - Windows current-user installer creates a Start Menu shortcut.
-- Unit tests: 26 passed.
+- Windows GPU and CPU edition profiles exist under `packaging\profiles`.
+- Windows distribution ZIP builder creates edition-local settings for model/device swapping.
+- Unit tests: 30 passed.
 
 ## Not Fully Automatable Here
 
@@ -69,6 +71,7 @@ local directory exists.
 - Clean reboot startup confirmation.
 - Admin firewall-block proof, because firewall rule creation returned `Access is denied`.
 - Linux `.deb` and `.rpm` package builds, because this machine does not have a working Linux shell/package toolchain.
+- CPU transcription runtime with `small.en`, because that model has not been downloaded and validated here yet.
 
 Deferred to a later milestone:
 

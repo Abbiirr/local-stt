@@ -45,6 +45,8 @@ archive\2026-06-03-v0.1-stable-lock\TODO.archived.md
 - [x] Add a version marker for `v0.1-stable`.
 - [x] Add release artifact naming convention.
 - [x] Add packaging scripts for selected formats.
+- [x] Add Windows CPU and GPU edition profiles.
+- [x] Build Windows CPU and GPU ZIP distribution artifacts.
 - [ ] Add release checklist.
 - [ ] Add smoke-test script for release artifacts.
 - [ ] Add documentation for install, update, and uninstall.
@@ -52,6 +54,7 @@ archive\2026-06-03-v0.1-stable-lock\TODO.archived.md
 ## Validation Matrix
 
 - [x] Windows package validation.
+- [ ] Windows CPU transcription validation with downloaded `small.en`.
 - [ ] Ubuntu package validation.
 - [ ] Debian package validation.
 - [ ] Fedora package validation.

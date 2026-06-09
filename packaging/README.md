@@ -7,7 +7,8 @@ preserve that baseline unless a verified regression is being fixed.
 
 | OS family | Format | Entry point | Notes |
 | --- | --- | --- | --- |
-| Windows | PyInstaller `--onedir` | `LocalWhisperDictation.exe` | Current stable path. |
+| Windows GPU | PyInstaller `--onedir` ZIP | `Run Local Whisper Dictation.bat` | `large-v3`, CUDA, `float16`. |
+| Windows CPU | PyInstaller `--onedir` ZIP | `Run Local Whisper Dictation.bat` | `small.en`, CPU, `int8`. |
 | Ubuntu/Debian | `.deb` | `/usr/bin/local-dictation` | Installs app files under `/opt/local-whisper-dictation`. |
 | Fedora | `.rpm` | `/usr/bin/local-dictation` | Uses the same `/opt` app layout. |
 
@@ -38,7 +39,10 @@ Windows:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\packaging\windows\build.ps1
-powershell -ExecutionPolicy Bypass -File .\packaging\windows\install_current_user.ps1 -StartWithWindows
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\install_current_user.ps1 -Edition gpu -StartWithWindows
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\install_current_user.ps1 -Edition cpu
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\create_distribution_zip.ps1 -Edition gpu
+powershell -ExecutionPolicy Bypass -File .\packaging\windows\create_distribution_zip.ps1 -Edition cpu
 ```
 
 Uninstall the current-user Windows install:
@@ -72,6 +76,8 @@ Windows:
 ```text
 dist/LocalWhisperDictation/
 dist/LocalWhisperDictationConsole/
+dist/releases/LocalWhisperDictation-gpu.zip
+dist/releases/LocalWhisperDictation-cpu.zip
 ```
 
 Debian/Ubuntu:

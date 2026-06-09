@@ -11,7 +11,7 @@ import numpy as np
 import sounddevice as sd
 
 from .audio import AudioRecorder, rms_to_level
-from .config import AppConfig, default_config_path
+from .config import AppConfig, default_config_path, effective_config_path
 from .transcriber import WhisperTranscriber
 
 
@@ -20,7 +20,8 @@ def collect_diagnostics() -> str:
     lines.append("Local Dictation Diagnostics")
     lines.append(f"Python: {platform.python_version()} ({platform.python_implementation()})")
     lines.append(f"Platform: {platform.platform()}")
-    lines.append(f"Config path: {default_config_path()}")
+    lines.append(f"Config path: {effective_config_path()}")
+    lines.append(f"User config path: {default_config_path()}")
     lines.append("")
     lines.append("NVIDIA:")
     lines.extend(_indent(_run_command(["nvidia-smi", "--query-gpu=name,driver_version,memory.total", "--format=csv,noheader"])))

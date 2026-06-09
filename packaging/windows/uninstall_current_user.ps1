@@ -1,8 +1,16 @@
 $ErrorActionPreference = "Stop"
 
 $targetDir = Join-Path $env:LOCALAPPDATA "Programs\LocalWhisperDictation"
-$programsShortcut = Join-Path ([Environment]::GetFolderPath("Programs")) "Local Whisper Dictation.lnk"
-$startupShortcut = Join-Path ([Environment]::GetFolderPath("Startup")) "Local Whisper Dictation.lnk"
+$programsDir = [Environment]::GetFolderPath("Programs")
+$startupDir = [Environment]::GetFolderPath("Startup")
+$shortcuts = @(
+  (Join-Path $programsDir "Local Whisper Dictation.lnk"),
+  (Join-Path $programsDir "Local Whisper Dictation GPU.lnk"),
+  (Join-Path $programsDir "Local Whisper Dictation CPU.lnk"),
+  (Join-Path $startupDir "Local Whisper Dictation.lnk"),
+  (Join-Path $startupDir "Local Whisper Dictation GPU.lnk"),
+  (Join-Path $startupDir "Local Whisper Dictation CPU.lnk")
+)
 
 $installedProcesses = Get-Process -Name "LocalWhisperDictation" -ErrorAction SilentlyContinue |
   Where-Object { $_.Path -and $_.Path.StartsWith($targetDir, [System.StringComparison]::OrdinalIgnoreCase) }
@@ -10,7 +18,7 @@ foreach ($process in $installedProcesses) {
   Stop-Process -Id $process.Id -Force
 }
 
-foreach ($path in @($programsShortcut, $startupShortcut)) {
+foreach ($path in $shortcuts) {
   if (Test-Path $path) {
     Remove-Item -LiteralPath $path -Force
   }

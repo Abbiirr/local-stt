@@ -28,7 +28,11 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("print-config", help="Print the effective settings.")
     subparsers.add_parser("write-default-config", help="Create the default settings file.")
 
-    cuda = subparsers.add_parser("smoke-cuda", help="Load a faster-whisper model on CUDA.")
+    model = subparsers.add_parser("smoke-model", help="Load a faster-whisper model with the configured device.")
+    model.add_argument("--model", default="tiny", help="Model to load. Defaults to tiny.")
+    model.add_argument("--compute-type", default=None, help="Override compute type.")
+
+    cuda = subparsers.add_parser("smoke-cuda", help="Compatibility alias for smoke-model.")
     cuda.add_argument("--model", default="tiny", help="Model to load. Defaults to tiny.")
     cuda.add_argument("--compute-type", default=None, help="Override compute type.")
 
@@ -71,7 +75,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Wrote {path}")
         return 0
 
-    if command == "smoke-cuda":
+    if command in {"smoke-cuda", "smoke-model"}:
         config = load_config()
         compute_type = args.compute_type or config.compute_type
         print(run_cuda_smoke(model_name=args.model, device=config.device, compute_type=compute_type))

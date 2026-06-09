@@ -48,6 +48,7 @@ The immediate goal is distribution readiness, not new dictation features.
 
 - [x] Decide supported install formats per OS.
 - [x] Windows: keep PyInstaller `--onedir` first; add a current-user install script.
+- [x] Windows: add explicit GPU and CPU edition profiles.
 - [x] Ubuntu/Debian: use `.deb` first with an `/opt/local-whisper-dictation` app layout.
 - [x] Fedora: use `.rpm` first with the same `/opt/local-whisper-dictation` app layout.
 - [x] Decide whether Linux packages bundle faster-whisper dependencies or install
@@ -79,6 +80,7 @@ The immediate goal is distribution readiness, not new dictation features.
 - [x] Verify packaged Windows WAV transcription.
 - [x] Verify settings/log creation.
 - [x] Verify Windows current-user install script.
+- [x] Verify Windows edition-local settings resolution.
 - [ ] Add Linux CI or documented VM test matrix.
 - [ ] Run Ubuntu validation.
 - [ ] Run Debian validation.
