@@ -4,6 +4,8 @@ Local tray dictation app for speech-to-text. The stable baseline is currently
 validated on Windows; Linux packaging for Ubuntu, Debian, and Fedora is in
 progress.
 
+Build and package instructions for a fresh clone are in [BUILD.md](BUILD.md).
+
 Default behavior:
 
 ```text
