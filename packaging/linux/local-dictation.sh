@@ -11,4 +11,7 @@ if [ ! -x "$PYTHON" ]; then
 fi
 
 cd "$APP_DIR"
+if [ -f "$APP_DIR/settings.json" ]; then
+  export LOCAL_DICTATION_CONFIG="$APP_DIR/settings.json"
+fi
 exec "$PYTHON" -m local_dictation "$@"

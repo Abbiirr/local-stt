@@ -16,6 +16,7 @@ cp -R "$ROOT_DIR/src" "$APP_DIR/src"
 cp "$ROOT_DIR/pyproject.toml" "$APP_DIR/pyproject.toml"
 cp "$ROOT_DIR/requirements.txt" "$APP_DIR/requirements.txt"
 cp "$ROOT_DIR/app_launcher.py" "$APP_DIR/app_launcher.py"
+cp "$ROOT_DIR/packaging/profiles/cpu-small-en.json" "$APP_DIR/settings.json"
 
 if [ -d "$ROOT_DIR/dist/wheelhouse" ]; then
   cp -R "$ROOT_DIR/dist/wheelhouse" "$APP_DIR/wheelhouse"
@@ -32,7 +33,8 @@ Version: $VERSION
 Section: utils
 Priority: optional
 Architecture: $ARCH
-Depends: python3, python3-venv, python3-pip, libportaudio2
+Depends: python3, python3-venv, python3-pip, libportaudio2, libegl1, libgl1, libxcb-cursor0, libxcb-xinerama0, libxkbcommon-x11-0, libxcb-icccm4, libxcb-keysyms1, libxcb-render-util0, libxcb-shape0, libxcb-randr0, libxcb-image0, xclip, wl-clipboard, xdotool
+Recommends: wtype
 Maintainer: Local Whisper Dictation
 Description: Local faster-whisper tray dictation app.
  A local-first dictation app using PySide6, sounddevice, and faster-whisper.

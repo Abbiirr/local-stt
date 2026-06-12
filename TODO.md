@@ -29,15 +29,15 @@ archive\2026-06-03-v0.1-stable-lock\TODO.archived.md
 - [ ] Define CUDA dependency expectations per OS.
 - [x] Define settings/log paths per OS.
 - [ ] Define startup/autostart setup per OS.
-- [ ] Define uninstall path per OS.
+- [x] Define uninstall path per OS.
 
 ## Compatibility Work
 
-- [ ] Audit Linux global hotkey implementation.
-- [ ] Audit Linux text insertion on X11.
-- [ ] Audit Linux text insertion on Wayland.
+- [x] Audit Linux global hotkey implementation.
+- [x] Audit Linux text insertion on X11.
+- [x] Audit Linux text insertion on Wayland.
 - [ ] Audit Linux tray support across common desktop environments.
-- [ ] Audit Linux microphone capture and permissions.
+- [x] Audit Linux microphone capture and permissions.
 - [ ] Identify Windows-specific code that needs platform abstraction.
 
 ## Release Engineering
@@ -48,7 +48,7 @@ archive\2026-06-03-v0.1-stable-lock\TODO.archived.md
 - [x] Add Windows CPU and GPU edition profiles.
 - [x] Build Windows CPU and GPU ZIP distribution artifacts.
 - [ ] Add release checklist.
-- [ ] Add smoke-test script for release artifacts.
+- [x] Add smoke-test script for release artifacts.
 - [ ] Add documentation for install, update, and uninstall.
 
 ## Validation Matrix

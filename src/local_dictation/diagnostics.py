@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import platform
+import shutil
 import subprocess
 import time
 import wave
@@ -31,6 +32,10 @@ def collect_diagnostics() -> str:
     lines.append("")
     lines.append("Audio devices:")
     lines.extend(_indent(str(sd.query_devices()).splitlines()))
+    if platform.system().lower() == "linux":
+        lines.append("")
+        lines.append("Linux desktop tools:")
+        lines.extend(_indent(_linux_desktop_tools()))
     return "\n".join(lines)
 
 
@@ -190,6 +195,11 @@ def _ctranslate2_status() -> list[str]:
 
 def _indent(lines: Iterable[str]) -> list[str]:
     return [f"  {line}" for line in lines]
+
+
+def _linux_desktop_tools() -> list[str]:
+    tools = ["xclip", "wl-copy", "xdotool", "wtype"]
+    return [f"{tool}: {'found' if shutil.which(tool) else 'missing'}" for tool in tools]
 
 
 def _resample_linear(audio: np.ndarray, source_rate: int, target_rate: int) -> np.ndarray:

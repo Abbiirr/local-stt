@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import os
+import platform
+import shutil
+import subprocess
 import time
 
 import keyboard
@@ -19,7 +23,7 @@ class TextInserter:
         payload = text + " " if self.config.append_trailing_space else text
 
         if self.config.type_text_instead_of_paste:
-            keyboard.write(payload)
+            self._type_text(payload)
             return
 
         if not self.config.auto_paste:
@@ -35,8 +39,45 @@ class TextInserter:
 
         pyperclip.copy(payload)
         time.sleep(self.config.paste_delay_seconds)
-        keyboard.press_and_release("ctrl+v")
+        self._paste_from_clipboard()
 
         if self.config.restore_clipboard_after_paste and previous_clipboard is not None:
             time.sleep(self.config.clipboard_restore_delay_seconds)
             pyperclip.copy(previous_clipboard)
+
+    def _type_text(self, payload: str) -> None:
+        if _is_linux():
+            if shutil.which("wtype"):
+                try:
+                    subprocess.run(["wtype", payload], check=True)
+                    return
+                except subprocess.SubprocessError:
+                    pass
+            if shutil.which("xdotool") and os.environ.get("DISPLAY"):
+                try:
+                    subprocess.run(["xdotool", "type", "--clearmodifiers", payload], check=True)
+                    return
+                except subprocess.SubprocessError:
+                    pass
+        keyboard.write(payload)
+
+    def _paste_from_clipboard(self) -> None:
+        if _is_linux():
+            if shutil.which("wtype") and os.environ.get("WAYLAND_DISPLAY"):
+                try:
+                    subprocess.run(["wtype", "-M", "ctrl", "v", "-m", "ctrl"], check=True)
+                    return
+                except subprocess.SubprocessError:
+                    pass
+            if shutil.which("xdotool") and os.environ.get("DISPLAY"):
+                try:
+                    subprocess.run(["xdotool", "key", "--clearmodifiers", "ctrl+v"], check=True)
+                    return
+                except subprocess.SubprocessError:
+                    pass
+            return
+        keyboard.press_and_release("ctrl+v")
+
+
+def _is_linux() -> bool:
+    return platform.system().lower() == "linux"

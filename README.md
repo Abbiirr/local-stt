@@ -150,9 +150,21 @@ powershell -ExecutionPolicy Bypass -File .\packaging\windows\uninstall_current_u
 Debian/Ubuntu package build on Linux:
 
 ```sh
+sudo apt update
+sudo apt install -y python3 python3-venv python3-pip dpkg-dev
 ./packaging/linux/build_wheelhouse.sh
 ./packaging/linux/build_deb.sh
+sudo apt install ./dist/local-whisper-dictation_0.1.0_amd64.deb
+./packaging/linux/validate_ubuntu.sh
 ```
+
+Remove the Ubuntu/Debian package:
+
+```sh
+sudo apt remove local-whisper-dictation
+```
+
+See [docs/UBUNTU.md](docs/UBUNTU.md) for the target-machine validation protocol.
 
 Fedora package build on Linux:
 
@@ -169,9 +181,22 @@ local-dictation diagnostics
 local-dictation --version
 ```
 
-The Linux package layer is ready for target-OS validation. Desktop hotkeys,
-focused-app insertion, tray behavior, microphone access, and CUDA runtime setup
-must still be verified on the target desktop environments.
+The Ubuntu/Debian package installs a CPU-safe profile by default:
+
+```json
+{
+  "model_name": "small.en",
+  "device": "cpu",
+  "compute_type": "int8",
+  "beam_size": 1
+}
+```
+
+Desktop hotkeys, focused-app insertion, tray behavior, microphone access, and
+CUDA runtime setup still need verification on each target desktop environment.
+On Linux, tray menu and overlay mouse controls are the fallback if global hotkeys
+are blocked. Text insertion uses `xdotool` on X11 or `wtype` on Wayland when
+available; otherwise the transcript remains on the clipboard.
 
 ## Windows ZIP Distribution
 

@@ -101,7 +101,10 @@ def run_app() -> int:
     try:
         return app.exec()
     finally:
-        keyboard.unhook_all()
+        try:
+            keyboard.unhook_all()
+        except Exception:
+            logger.exception("Failed to unhook global hotkeys.")
         logger.info("Tray app exited.")
 
 

@@ -57,8 +57,8 @@ The immediate goal is distribution readiness, not new dictation features.
 
 ## Phase 2.3: Cross-Platform Compatibility Audit
 
-- [ ] Audit global hotkey support on Linux.
-- [ ] Audit focused-app text insertion on X11 and Wayland.
+- [x] Audit global hotkey support on Linux.
+- [x] Audit focused-app text insertion on X11 and Wayland.
 - [ ] Audit system tray support across GNOME/KDE and common extensions.
 - [ ] Audit microphone permissions and device selection on Linux.
 - [ ] Audit CUDA runtime expectations on Linux.
@@ -67,7 +67,7 @@ The immediate goal is distribution readiness, not new dictation features.
 ## Phase 2.4: Installer/User Experience
 
 - [ ] Define first-run flow.
-- [ ] Provide diagnostics command for every supported OS.
+- [x] Provide diagnostics command for every supported OS.
 - [ ] Provide model download/check command for every supported OS.
 - [ ] Provide startup/autostart setup for Windows and Linux.
 - [ ] Provide uninstall instructions.

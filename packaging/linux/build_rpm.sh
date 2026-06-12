@@ -16,6 +16,7 @@ cp -R "$ROOT_DIR/src" "$STAGE/${PKG_NAME}-${VERSION}/src"
 cp "$ROOT_DIR/pyproject.toml" "$STAGE/${PKG_NAME}-${VERSION}/pyproject.toml"
 cp "$ROOT_DIR/requirements.txt" "$STAGE/${PKG_NAME}-${VERSION}/requirements.txt"
 cp "$ROOT_DIR/app_launcher.py" "$STAGE/${PKG_NAME}-${VERSION}/app_launcher.py"
+cp "$ROOT_DIR/packaging/profiles/cpu-small-en.json" "$STAGE/${PKG_NAME}-${VERSION}/settings.json"
 mkdir -p "$STAGE/${PKG_NAME}-${VERSION}/packaging/linux"
 cp "$ROOT_DIR/packaging/linux/local-dictation.sh" "$STAGE/${PKG_NAME}-${VERSION}/packaging/linux/local-dictation.sh"
 cp "$ROOT_DIR/packaging/linux/local-whisper-dictation.desktop" "$STAGE/${PKG_NAME}-${VERSION}/packaging/linux/local-whisper-dictation.desktop"
@@ -37,6 +38,9 @@ BuildArch:      noarch
 Requires:       python3
 Requires:       python3-pip
 Requires:       portaudio
+Requires:       xclip
+Requires:       wl-clipboard
+Requires:       xdotool
 
 %description
 Local-first dictation app using PySide6, sounddevice, and faster-whisper.
@@ -46,7 +50,7 @@ Local-first dictation app using PySide6, sounddevice, and faster-whisper.
 
 %install
 mkdir -p %{buildroot}/opt/local-whisper-dictation
-cp -R src pyproject.toml requirements.txt app_launcher.py packaging %{buildroot}/opt/local-whisper-dictation/
+cp -R src pyproject.toml requirements.txt app_launcher.py settings.json packaging %{buildroot}/opt/local-whisper-dictation/
 if [ -d wheelhouse ]; then cp -R wheelhouse %{buildroot}/opt/local-whisper-dictation/; fi
 mkdir -p %{buildroot}/usr/bin
 install -m 0755 packaging/linux/local-dictation.sh %{buildroot}/usr/bin/local-dictation

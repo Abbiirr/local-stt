@@ -60,7 +60,7 @@ local directory exists.
 - Windows current-user installer creates a Start Menu shortcut.
 - Windows GPU and CPU edition profiles exist under `packaging\profiles`.
 - Windows distribution ZIP builder creates edition-local settings for model/device swapping.
-- Unit tests: 30 passed.
+- Unit tests: 33 passed.
 
 ## Not Fully Automatable Here
 
@@ -72,6 +72,7 @@ local directory exists.
 - Admin firewall-block proof, because firewall rule creation returned `Access is denied`.
 - Linux `.deb` and `.rpm` package builds, because this machine does not have a working Linux shell/package toolchain.
 - CPU transcription runtime with `small.en`, because that model has not been downloaded and validated here yet.
+- Ubuntu `.deb` runtime validation on an actual Ubuntu desktop.
 
 Deferred to a later milestone:
 

@@ -30,8 +30,12 @@ When present, installers use it with `--no-index`. If absent, installers fall
 back to normal `pip install`, which requires internet access or a configured
 local package mirror.
 
-Model weights are not bundled. They are resolved from the normal faster-whisper
-cache or an app-local `models/faster-whisper-large-v3` directory.
+Model weights are not bundled by default. They are resolved from the normal
+faster-whisper cache or app-local model folders named:
+
+```text
+models/faster-whisper-<model_name>
+```
 
 ## Build Order
 
@@ -60,7 +64,19 @@ Linux wheelhouse:
 Debian/Ubuntu package:
 
 ```sh
+sudo apt update
+sudo apt install -y python3 python3-venv python3-pip dpkg-dev
+# Optional but recommended for repeatable dependency installs:
+./packaging/linux/build_wheelhouse.sh
 ./packaging/linux/build_deb.sh
+sudo apt install ./dist/local-whisper-dictation_0.1.0_amd64.deb
+./packaging/linux/validate_ubuntu.sh
+```
+
+Remove:
+
+```sh
+sudo apt remove local-whisper-dictation
 ```
 
 Fedora package:
@@ -94,6 +110,15 @@ dist/local-whisper-dictation-0.1.0-1*.noarch.rpm
 
 ## Linux Runtime Notes
 
-The current code remains the Windows-proven baseline. Linux packaging is the next
-distribution layer; global hotkeys, tray behavior, and focused-app text insertion
-still need distro/desktop validation, especially on Wayland.
+The `.deb` package installs a CPU-safe default profile:
+
+```text
+model_name=small.en
+device=cpu
+compute_type=int8
+```
+
+Global hotkeys are best-effort on Linux. If global registration fails, use the
+tray menu and overlay mouse controls. Focused-app insertion is also desktop
+dependent: X11 uses `xdotool`, Wayland tries `wtype` when available, and if
+desktop injection is blocked the transcript remains on the clipboard.
