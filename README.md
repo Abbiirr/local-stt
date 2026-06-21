@@ -31,6 +31,10 @@ transcription for the current milestone (`language = "en"`). Bangla and mixed
 English/Bangla dictation are deferred. Spoken punctuation commands are off by
 default so ordinary words like "period" and "comma" are not silently rewritten.
 
+Recordings are saved locally by default before transcription so failed
+dictations can be recovered and retried. History never leaves the machine unless
+you copy it elsewhere.
+
 ## Install
 
 Use Python 3.11.
@@ -70,6 +74,53 @@ or:
 .\.venv\Scripts\python.exe -m local_dictation smoke-mic --seconds 1.5
 .\.venv\Scripts\python.exe -m local_dictation transcribe-wav artifacts\en_test.wav --expect-text "The quick brown fox jumps over the lazy dog near the riverbank."
 .\.venv\Scripts\python.exe -m local_dictation smoke-nonspeech --seconds 5
+```
+
+## History And Recovery
+
+Every completed recording is saved before transcription under:
+
+```text
+%APPDATA%\LocalWhisperDictation\history\
+```
+
+Each entry contains:
+
+```text
+audio.wav
+metadata.json
+transcript.txt  when transcription succeeds
+error.txt       when transcription fails
+```
+
+List recent entries:
+
+```powershell
+.\.venv\Scripts\python.exe -m local_dictation history-list
+```
+
+Show one entry:
+
+```powershell
+.\.venv\Scripts\python.exe -m local_dictation history-show <history-id>
+```
+
+Retry transcription from the saved audio:
+
+```powershell
+.\.venv\Scripts\python.exe -m local_dictation history-retry <history-id>
+```
+
+Retry and insert the recovered transcript into the focused app:
+
+```powershell
+.\.venv\Scripts\python.exe -m local_dictation history-retry <history-id> --insert
+```
+
+Disable local recording history only if you do not want recovery:
+
+```json
+"history_enabled": false
 ```
 
 The local model is expected at `models\faster-whisper-large-v3`. If that
@@ -334,6 +385,7 @@ Recommended current settings:
   "unload_model_when_idle": true,
   "unload_after_seconds": 300,
   "enable_spoken_punctuation": false,
+  "history_enabled": true,
   "type_text_instead_of_paste": false
 }
 ```

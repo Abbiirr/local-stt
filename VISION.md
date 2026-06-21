@@ -56,7 +56,7 @@ The user values privacy, low idle resource usage, predictable hotkeys, and stron
    Short dictations should feel near-immediate after recording stops. The RTX 4060 Ti 16 GB should be used for Whisper large-v3 or a comparable local model.
 
 6. **Auditable behavior**
-   Prefer simple, inspectable architecture. Avoid hidden history, telemetry, background context collection, screen capture, or clipboard inspection unless deliberately enabled.
+   Prefer simple, inspectable architecture. Avoid telemetry, background context collection, screen capture, or clipboard inspection unless deliberately enabled. Local dictation history may be enabled for recovery when the user wants failed recordings to be retryable.
 
 7. **Polished feedback**
    The user should always know the current state: idle, recording, transcribing, inserted, canceled, or failed. A waveform or small overlay is preferred, but reliability comes first.
@@ -86,7 +86,7 @@ Language: en
 Hotkey: Ctrl+Alt+D or another non-conflicting global shortcut
 Idle UI: tray only
 Active UI: small overlay
-History: off by default unless explicitly accepted
+History: local recovery history enabled when the user wants retryable failed dictations
 ```
 
 ### Model Note (2026)

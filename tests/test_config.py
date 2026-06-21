@@ -27,6 +27,7 @@ class ConfigTests(unittest.TestCase):
         self.assertFalse(config.enable_spoken_punctuation)
         self.assertTrue(config.capitalize_transcript)
         self.assertFalse(config.type_text_instead_of_paste)
+        self.assertTrue(config.history_enabled)
 
     def test_load_ignores_unknown_keys(self):
         with tempfile.TemporaryDirectory() as tmp:

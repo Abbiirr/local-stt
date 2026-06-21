@@ -31,6 +31,7 @@ local directory exists.
 - `large-v3` loads on CUDA with `float16`.
 - `large-v3` transcribes generated WAV audio correctly.
 - Runtime language is set to English-only for the current milestone.
+- Local dictation history is enabled by default for failed-transcription recovery.
 - Rotating app log is written to `%APPDATA%\LocalWhisperDictation\app.log`.
 - Packaged tray app created the rotating app log and wrote startup entries.
 - Hotkey registration failures are handled without crashing the tray app.
@@ -60,7 +61,7 @@ local directory exists.
 - Windows current-user installer creates a Start Menu shortcut.
 - Windows GPU and CPU edition profiles exist under `packaging\profiles`.
 - Windows distribution ZIP builder creates edition-local settings for model/device swapping.
-- Unit tests: 33 passed.
+- Unit tests: 37 passed.
 
 ## Not Fully Automatable Here
 

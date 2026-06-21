@@ -6,6 +6,13 @@ from PySide6.QtCore import QObject, QTimer, Signal
 
 from .audio import AudioRecorder
 from .config import AppConfig
+from .history import (
+    HistoryEntry,
+    create_history_entry,
+    update_history_error,
+    update_history_status,
+    update_history_transcript,
+)
 from .inserter import TextInserter
 from .log import get_logger
 from .transcriber import WhisperTranscriber
@@ -91,7 +98,9 @@ class DictationController(QObject):
             return
 
         duration_seconds = len(audio) / self.config.sample_rate if audio.size else 0.0
+        history_entry = create_history_entry(audio, self.config)
         if duration_seconds < self.config.minimum_duration_seconds:
+            update_history_status(history_entry, "too_short")
             with self._state_lock:
                 self.transcribing = False
             self.overlay_hide.emit()
@@ -100,7 +109,7 @@ class DictationController(QObject):
 
         self.state_changed.emit("transcribing")
         self.overlay_show.emit("Transcribing locally...")
-        threading.Thread(target=self._transcribe_worker, args=(audio,), daemon=True).start()
+        threading.Thread(target=self._transcribe_worker, args=(audio, history_entry), daemon=True).start()
 
     def cancel_recording(self) -> None:
         with self._state_lock:
@@ -167,17 +176,22 @@ class DictationController(QObject):
             self.logger.exception("Model preload failed.")
             self.tray_message.emit(f"Model preload error: {exc}")
 
-    def _transcribe_worker(self, audio) -> None:
+    def _transcribe_worker(self, audio, history_entry: HistoryEntry | None = None) -> None:
         try:
             text = self.transcriber.transcribe(audio)
+            update_history_transcript(history_entry, text)
             if text:
                 self.inserter.insert(text)
-                self.tray_message.emit("Dictation inserted.")
+                suffix = f" History: {history_entry.id}" if history_entry else ""
+                self.tray_message.emit(f"Dictation inserted.{suffix}")
             else:
-                self.tray_message.emit("No speech detected.")
+                suffix = f" History: {history_entry.id}" if history_entry else ""
+                self.tray_message.emit(f"No speech detected.{suffix}")
         except Exception as exc:
+            update_history_error(history_entry, str(exc))
             self.logger.exception("Transcription worker failed.")
-            self.tray_message.emit(f"Transcription error: {exc}")
+            suffix = f" History: {history_entry.id}" if history_entry else ""
+            self.tray_message.emit(f"Transcription error: {exc}.{suffix}")
         finally:
             with self._state_lock:
                 self.transcribing = False

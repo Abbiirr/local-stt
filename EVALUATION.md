@@ -63,6 +63,7 @@ Implemented features:
 - Clipboard paste into focused app.
 - Clipboard restore after paste.
 - JSON settings under `%APPDATA%`.
+- Local history under `%APPDATA%\LocalWhisperDictation\history` for recovery.
 - Diagnostics commands.
 - Startup shortcut scripts.
 - PyInstaller `--onedir` packaging.
@@ -95,7 +96,7 @@ validation are deferred to a later milestone.
 | Dependency install | Pass | `pip install -r requirements.txt` completed. |
 | Editable package install | Pass | `pip install -e .` completed. |
 | Syntax compile | Pass | `python -m compileall -q src tests`. |
-| Unit tests | Pass | `33 tests` passed. |
+| Unit tests | Pass | `37 tests` passed. |
 | Diagnostics | Pass | CUDA device and microphone reported. |
 | CUDA tiny smoke test | Pass | `tiny` loaded on CUDA with `float16`. |
 | CUDA large-v3 smoke test | Pass | Local `large-v3` loaded on CUDA with `float16`. |
@@ -128,6 +129,7 @@ validation are deferred to a later milestone.
 | Linux package script syntax | Not run here | Local `bash.exe` is a broken WSL shim; validate on Ubuntu/Debian/Fedora. |
 | Ubuntu `.deb` hardening | Pass, static | `.deb` now ships CPU-safe settings, launcher-enforced config, desktop entry, Qt/XCB/audio/clipboard/input dependencies, and validation script. |
 | Linux insertion fallback | Pass, unit | X11 `xdotool` path, missing-tool clipboard fallback, and failed-injection fallback are covered by unit tests. |
+| History recovery layer | Pass, unit | Saved WAV metadata, transcript/error updates, listing, and disabled-history behavior are covered by tests. |
 
 ## Current Verdict
 

@@ -8,11 +8,20 @@ from . import __version__
 from .config import load_config, save_config
 from .diagnostics import (
     collect_diagnostics,
+    load_wav_mono_float32,
     run_cuda_smoke,
     run_microphone_smoke,
     run_nonspeech_smoke,
     run_wav_transcription_smoke,
 )
+from .history import (
+    list_history_entries,
+    load_history_entry,
+    update_history_error,
+    update_history_transcript,
+)
+from .inserter import TextInserter
+from .transcriber import WhisperTranscriber
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -47,6 +56,16 @@ def build_parser() -> argparse.ArgumentParser:
     nonspeech = subparsers.add_parser("smoke-nonspeech", help="Verify synthetic silence/noise does not produce text.")
     nonspeech.add_argument("--seconds", type=float, default=5.0, help="Duration of each synthetic clip.")
     nonspeech.add_argument("--noise-amplitude", type=float, default=0.002, help="White-noise standard deviation.")
+
+    history_list = subparsers.add_parser("history-list", help="List saved dictation history entries.")
+    history_list.add_argument("--limit", type=int, default=20, help="Maximum entries to print.")
+
+    history_show = subparsers.add_parser("history-show", help="Show one dictation history entry.")
+    history_show.add_argument("id", help="History entry id.")
+
+    history_retry = subparsers.add_parser("history-retry", help="Retry transcription for a saved recording.")
+    history_retry.add_argument("id", help="History entry id.")
+    history_retry.add_argument("--insert", action="store_true", help="Insert recovered text into the focused app.")
 
     return parser
 
@@ -102,6 +121,44 @@ def main(argv: list[str] | None = None) -> int:
         config = load_config()
         print(run_nonspeech_smoke(config=config, seconds=args.seconds, noise_amplitude=args.noise_amplitude))
         return 0
+
+    if command == "history-list":
+        for entry in list_history_entries(limit=args.limit):
+            print(
+                f"{entry.id}\t{entry.status}\t{entry.duration_seconds:.2f}s\t"
+                f"{entry.model_name}\t{entry.audio_path}"
+            )
+        return 0
+
+    if command == "history-show":
+        entry = load_history_entry(args.id)
+        print(entry.to_dict())
+        if entry.transcript_path:
+            transcript = Path(entry.transcript_path)
+            if transcript.exists():
+                print("")
+                print(transcript.read_text(encoding="utf-8"))
+        if entry.error_path:
+            error = Path(entry.error_path)
+            if error.exists():
+                print("")
+                print(error.read_text(encoding="utf-8"))
+        return 0
+
+    if command == "history-retry":
+        config = load_config()
+        entry = load_history_entry(args.id)
+        audio = load_wav_mono_float32(Path(entry.audio_path), target_sample_rate=config.sample_rate)
+        try:
+            text = WhisperTranscriber(config).transcribe(audio)
+            update_history_transcript(entry, text)
+            print(text)
+            if args.insert and text:
+                TextInserter(config).insert(text)
+            return 0
+        except Exception as exc:
+            update_history_error(entry, str(exc))
+            raise
 
     parser.print_help()
     return 2

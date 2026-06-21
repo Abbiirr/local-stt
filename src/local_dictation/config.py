@@ -40,6 +40,7 @@ class AppConfig:
     capitalize_transcript: bool = True
     enable_spoken_punctuation: bool = False
     type_text_instead_of_paste: bool = False
+    history_enabled: bool = True
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "AppConfig":
