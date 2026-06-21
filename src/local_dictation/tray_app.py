@@ -9,6 +9,7 @@ from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
 from .config import load_config
 from .controller import DictationController
+from .history_window import HistoryWindow
 from .log import setup_logging
 from .overlay import WaveOverlay
 
@@ -73,11 +74,24 @@ def run_app() -> int:
     action_cancel = QAction("Cancel Recording", menu)
     action_cancel.triggered.connect(controller.cancel_recording)
 
+    action_history = QAction("History…", menu)
+    history_window: dict[str, HistoryWindow] = {}
+
+    def open_history() -> None:
+        window = history_window.get("window")
+        if window is None:
+            window = HistoryWindow(config, controller)
+            history_window["window"] = window
+        window.show_window()
+
+    action_history.triggered.connect(open_history)
+
     action_quit = QAction("Quit", menu)
     action_quit.triggered.connect(controller.shutdown)
 
     menu.addAction(action_toggle)
     menu.addAction(action_cancel)
+    menu.addAction(action_history)
     menu.addSeparator()
     menu.addAction(action_quit)
 
@@ -105,15 +119,40 @@ def run_app() -> int:
             keyboard.unhook_all()
         except Exception:
             logger.exception("Failed to unhook global hotkeys.")
+        for listener in _pynput_listeners:
+            try:
+                listener.stop()
+            except Exception:
+                logger.exception("Failed to stop pynput listener.")
         logger.info("Tray app exited.")
+
+
+_pynput_listeners: list = []
 
 
 def _register_hotkey(hotkey: str, callback, tray: QSystemTrayIcon, logger) -> None:
     try:
         keyboard.add_hotkey(hotkey, callback)
+        return
+    except Exception:
+        logger.info("keyboard could not register hotkey %s; trying pynput.", hotkey)
+
+    try:
+        from pynput import keyboard as pynput_keyboard
+
+        listener = pynput_keyboard.GlobalHotKeys({_pynput_combo(hotkey): callback})
+        listener.daemon = True
+        listener.start()
+        _pynput_listeners.append(listener)
+        logger.info("Registered hotkey %s via pynput.", hotkey)
     except Exception as exc:
         logger.exception("Failed to register hotkey %s.", hotkey)
         tray.showMessage(
             "Local Dictation",
             f"Hotkey '{hotkey}' could not be registered. Use the tray menu instead. Error: {exc}",
         )
+
+
+def _pynput_combo(hotkey: str) -> str:
+    tokens = [token.strip().lower() for token in hotkey.split("+")]
+    return "+".join(f"<{token}>" if len(token) > 1 else token for token in tokens)

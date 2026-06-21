@@ -11,6 +11,51 @@ import pyperclip
 
 from .config import AppConfig
 
+TERMINAL_WM_CLASSES = {
+    "alacritty",
+    "com.mitchellh.ghostty",
+    "cool-retro-term",
+    "deepin-terminal",
+    "dev.warp.warp",
+    "eterm",
+    "foot",
+    "footclient",
+    "ghostty",
+    "gnome-terminal",
+    "gnome-terminal-server",
+    "guake",
+    "hyper",
+    "kgx",
+    "kitty",
+    "konsole",
+    "lxterminal",
+    "mate-terminal",
+    "org.gnome.console",
+    "org.gnome.ptyxis",
+    "org.gnome.terminal",
+    "org.wezfurlong.wezterm",
+    "ptyxis",
+    "qterminal",
+    "rxvt",
+    "rxvt-unicode",
+    "sakura",
+    "st",
+    "st-256color",
+    "tabby",
+    "terminator",
+    "terminology",
+    "tilda",
+    "tilix",
+    "urxvt",
+    "uxterm",
+    "warp",
+    "wezterm",
+    "x-terminal-emulator",
+    "xfce4-terminal",
+    "xterm",
+    "yakuake",
+}
+
 
 class TextInserter:
     def __init__(self, config: AppConfig):
@@ -71,7 +116,7 @@ class TextInserter:
                     pass
             if shutil.which("xdotool") and os.environ.get("DISPLAY"):
                 try:
-                    subprocess.run(["xdotool", "key", "--clearmodifiers", "ctrl+v"], check=True)
+                    subprocess.run(["xdotool", "key", "--clearmodifiers", _paste_keys()], check=True)
                     return
                 except subprocess.SubprocessError:
                     pass
@@ -81,3 +126,26 @@ class TextInserter:
 
 def _is_linux() -> bool:
     return platform.system().lower() == "linux"
+
+
+def _paste_keys() -> str:
+    if _active_window_wm_classes() & TERMINAL_WM_CLASSES:
+        return "ctrl+shift+v"
+    return "ctrl+v"
+
+
+def _active_window_wm_classes() -> set[str]:
+    if not (shutil.which("xdotool") and shutil.which("xprop")):
+        return set()
+    try:
+        window_id = subprocess.run(
+            ["xdotool", "getactivewindow"],
+            capture_output=True, text=True, timeout=1.0, check=True,
+        ).stdout.strip()
+        wm_class = subprocess.run(
+            ["xprop", "-id", window_id, "WM_CLASS"],
+            capture_output=True, text=True, timeout=1.0, check=True,
+        ).stdout
+        return {part.strip().strip('"').lower() for part in wm_class.split("=", 1)[1].split(",")}
+    except Exception:
+        return set()

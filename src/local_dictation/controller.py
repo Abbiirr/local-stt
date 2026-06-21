@@ -25,6 +25,7 @@ class DictationController(QObject):
     tray_message = Signal(str)
     state_changed = Signal(str)
     app_quit = Signal()
+    history_retry_done = Signal(str, str, str)
 
     def __init__(self, config: AppConfig):
         super().__init__()
@@ -98,7 +99,12 @@ class DictationController(QObject):
             return
 
         duration_seconds = len(audio) / self.config.sample_rate if audio.size else 0.0
-        history_entry = create_history_entry(audio, self.config)
+        try:
+            history_entry = create_history_entry(audio, self.config)
+        except Exception:
+            history_entry = None
+            self.logger.exception("Failed to save recording to history; continuing.")
+            self.tray_message.emit("Warning: could not save this recording to history.")
         if duration_seconds < self.config.minimum_duration_seconds:
             update_history_status(history_entry, "too_short")
             with self._state_lock:
@@ -166,6 +172,15 @@ class DictationController(QObject):
             pass
         self.app_quit.emit()
 
+    def retry_history_entry(self, entry: HistoryEntry) -> None:
+        with self._state_lock:
+            if self.recording or self.transcribing:
+                self.tray_message.emit("Busy; try the retry again in a moment.")
+                return
+            self.transcribing = True
+
+        threading.Thread(target=self._retry_worker, args=(entry,), daemon=True).start()
+
     def _preload_worker(self) -> None:
         try:
             self.transcriber.load()
@@ -197,6 +212,31 @@ class DictationController(QObject):
                 self.transcribing = False
             self.overlay_hide.emit()
             self.state_changed.emit("idle")
+
+    def _retry_worker(self, entry: HistoryEntry) -> None:
+        from pathlib import Path
+
+        from .diagnostics import load_wav_mono_float32
+
+        text = ""
+        error = ""
+        try:
+            audio = load_wav_mono_float32(Path(entry.audio_path), target_sample_rate=self.config.sample_rate)
+            text = self.transcriber.transcribe(audio)
+            update_history_transcript(entry, text)
+            if text:
+                self.tray_message.emit(f"History {entry.id} re-transcribed.")
+            else:
+                self.tray_message.emit(f"History {entry.id}: no speech detected.")
+        except Exception as exc:
+            error = str(exc)
+            update_history_error(entry, error)
+            self.logger.exception("History retry failed.")
+            self.tray_message.emit(f"History retry error: {exc}")
+        finally:
+            with self._state_lock:
+                self.transcribing = False
+            self.history_retry_done.emit(entry.id, text, error)
 
     def _idle_model_check(self) -> None:
         with self._state_lock:

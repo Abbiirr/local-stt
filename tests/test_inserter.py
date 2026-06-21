@@ -12,6 +12,7 @@ class TextInserterTests(unittest.TestCase):
         inserter = TextInserter(config)
 
         with (
+            patch("local_dictation.inserter._is_linux", return_value=False),
             patch("local_dictation.inserter.keyboard.write") as keyboard_write,
             patch("local_dictation.inserter.pyperclip.copy") as clipboard_copy,
         ):
@@ -67,6 +68,51 @@ class TextInserterTests(unittest.TestCase):
 
         clipboard_copy.assert_called_once_with("hello ")
         press.assert_not_called()
+
+    def test_linux_paste_uses_ctrl_shift_v_for_terminal_windows(self):
+        inserter = TextInserter(AppConfig(restore_clipboard_after_paste=False))
+
+        with (
+            patch("local_dictation.inserter._is_linux", return_value=True),
+            patch("local_dictation.inserter.shutil.which", side_effect=lambda command: "/usr/bin/xdotool" if command == "xdotool" else None),
+            patch.dict("os.environ", {"DISPLAY": ":0"}, clear=True),
+            patch("local_dictation.inserter.pyperclip.copy"),
+            patch("local_dictation.inserter._active_window_wm_classes", return_value={"dev.warp.warp"}),
+            patch("local_dictation.inserter.subprocess.run") as run,
+        ):
+            inserter.insert("hello")
+
+        run.assert_any_call(["xdotool", "key", "--clearmodifiers", "ctrl+shift+v"], check=True)
+
+    def test_linux_paste_uses_ctrl_v_for_non_terminal_windows(self):
+        inserter = TextInserter(AppConfig(restore_clipboard_after_paste=False))
+
+        with (
+            patch("local_dictation.inserter._is_linux", return_value=True),
+            patch("local_dictation.inserter.shutil.which", side_effect=lambda command: "/usr/bin/xdotool" if command == "xdotool" else None),
+            patch.dict("os.environ", {"DISPLAY": ":0"}, clear=True),
+            patch("local_dictation.inserter.pyperclip.copy"),
+            patch("local_dictation.inserter._active_window_wm_classes", return_value={"firefox"}),
+            patch("local_dictation.inserter.subprocess.run") as run,
+        ):
+            inserter.insert("hello")
+
+        run.assert_any_call(["xdotool", "key", "--clearmodifiers", "ctrl+v"], check=True)
+
+    def test_linux_paste_falls_back_to_ctrl_v_when_window_class_unknown(self):
+        inserter = TextInserter(AppConfig(restore_clipboard_after_paste=False))
+
+        with (
+            patch("local_dictation.inserter._is_linux", return_value=True),
+            patch("local_dictation.inserter.shutil.which", side_effect=lambda command: "/usr/bin/xdotool" if command == "xdotool" else None),
+            patch.dict("os.environ", {"DISPLAY": ":0"}, clear=True),
+            patch("local_dictation.inserter.pyperclip.copy"),
+            patch("local_dictation.inserter._active_window_wm_classes", return_value=set()),
+            patch("local_dictation.inserter.subprocess.run") as run,
+        ):
+            inserter.insert("hello")
+
+        run.assert_any_call(["xdotool", "key", "--clearmodifiers", "ctrl+v"], check=True)
 
     def test_auto_paste_disabled_copies_payload(self):
         config = AppConfig(auto_paste=False, append_trailing_space=False)

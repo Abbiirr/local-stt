@@ -13,6 +13,7 @@ dependencies = [
   "numpy",
   "pyperclip",
   "keyboard",
+  "pynput",
   "PySide6",
 ]
 
