@@ -18,7 +18,7 @@ Model: large-v3
 Device: CUDA
 Compute: float16
 Language: en
-Hotkeys: Ctrl+Alt+D start/stop, Esc cancel
+Hotkeys: Ctrl+Alt+Space start/stop, Esc cancel
 Output: paste into focused app with clipboard restore
 ```
 
@@ -74,7 +74,7 @@ Pass criteria:
   `py -0p`
 - [ ] Confirm default microphone device and input level.
 - [ ] Confirm no other Whisper/STT process is running.
-- [ ] Confirm `Ctrl+Alt+D` is free.
+- [ ] Confirm `Ctrl+Alt+Space` is free.
 - [ ] Confirm `Esc` cancellation will not conflict with the target app during testing.
 - [ ] Confirm the settings file exists after setup:
   `%APPDATA%\LocalWhisperDictation\settings.json`
@@ -278,9 +278,9 @@ Pass: `large-v3` + CUDA + `float16` + English language selection is working or a
 
 ### T5 - Hotkeys
 
-- [ ] `Ctrl+Alt+D` starts recording.
+- [ ] `Ctrl+Alt+Space` starts recording.
 - [ ] Overlay appears while recording.
-- [ ] `Ctrl+Alt+D` stops recording and starts transcription.
+- [ ] `Ctrl+Alt+Space` stops recording and starts transcription.
 - [ ] `Esc` cancels and inserts no text.
 - [ ] Hotkeys work while Notepad is focused.
 - [ ] Hotkeys work while a browser field is focused.

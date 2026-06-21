@@ -9,8 +9,8 @@ Build and package instructions for a fresh clone are in [BUILD.md](BUILD.md).
 Default behavior:
 
 ```text
-Ctrl+Alt+D = start recording
-Ctrl+Alt+D = stop, transcribe locally, paste into focused app
+Ctrl+Alt+Space = start recording
+Ctrl+Alt+Space = stop, transcribe locally, paste into focused app
 Esc        = cancel current recording
 ```
 

@@ -11,7 +11,7 @@
   "device": "cuda",
   "enable_spoken_punctuation": false,
   "hotkey_cancel": "esc",
-  "hotkey_toggle": "ctrl+alt+d",
+  "hotkey_toggle": "ctrl+alt+space",
   "input_device": null,
   "language": "en",
   "minimum_duration_seconds": 0.4,

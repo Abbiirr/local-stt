@@ -89,7 +89,7 @@ cd K:\projects\ai\stt
 Hotkeys:
 
 ```text
-Ctrl+Alt+D = start/stop dictation
+Ctrl+Alt+Space = start/stop dictation
 Esc        = cancel recording
 ```
 

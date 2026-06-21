@@ -47,11 +47,11 @@ Set `input_device` to the numeric device id or device name reported by
 Default hotkeys:
 
 ```text
-Ctrl+Alt+D = start/stop
+Ctrl+Alt+Space = start/stop
 Esc        = cancel recording
 ```
 
-If another app uses `Ctrl+Alt+D`, edit `hotkey_toggle` in the settings file.
+If another app uses `Ctrl+Alt+Space`, edit `hotkey_toggle` in the settings file.
 
 The app uses the Windows keyboard hook provided by the `keyboard` package only
 to match the configured hotkeys. If dictation or paste does nothing inside an

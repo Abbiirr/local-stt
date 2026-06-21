@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 
 import keyboard
@@ -12,6 +13,7 @@ from .controller import DictationController
 from .history_window import HistoryWindow
 from .log import setup_logging
 from .overlay import WaveOverlay
+from .single_instance import acquire_lock, bootstrap_lock_is_held, release_lock
 
 
 class HotkeyBridge(QObject):
@@ -44,6 +46,12 @@ def run_app() -> int:
     logger = setup_logging()
     config = load_config()
     logger.info("Starting tray app.")
+
+    instance_lock = None
+    if not bootstrap_lock_is_held():
+        instance_lock, already_running = acquire_lock(logger)
+        if already_running:
+            os._exit(0)
 
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
@@ -124,6 +132,8 @@ def run_app() -> int:
                 listener.stop()
             except Exception:
                 logger.exception("Failed to stop pynput listener.")
+        if instance_lock is not None:
+            release_lock(instance_lock, logger)
         logger.info("Tray app exited.")
 
 

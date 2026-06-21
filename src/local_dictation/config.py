@@ -13,7 +13,7 @@ APP_NAME = "LocalWhisperDictation"
 
 @dataclass(slots=True)
 class AppConfig:
-    hotkey_toggle: str = "ctrl+alt+d"
+    hotkey_toggle: str = "ctrl+alt+space"
     hotkey_cancel: str = "esc"
     model_name: str = "large-v3"
     device: str = "cuda"

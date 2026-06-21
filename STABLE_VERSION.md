@@ -10,7 +10,7 @@ This lock covers the current Windows local dictation app:
 
 - PySide6 tray app.
 - Draggable and closable waveform/status overlay.
-- `Ctrl+Alt+D` start/stop.
+- `Ctrl+Alt+Space` start/stop.
 - `Esc` cancel while recording.
 - English-only faster-whisper `large-v3`.
 - CUDA `float16`.

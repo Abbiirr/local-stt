@@ -83,7 +83,7 @@ Speed model candidate: NVIDIA Parakeet TDT v3 for a future English-only fast mod
 Device: CUDA
 Compute: float16 first, int8_float16 only if VRAM pressure matters
 Language: en
-Hotkey: Ctrl+Alt+D or another non-conflicting global shortcut
+Hotkey: Ctrl+Alt+Space or another non-conflicting global shortcut
 Idle UI: tray only
 Active UI: small overlay
 History: local recovery history enabled when the user wants retryable failed dictations

@@ -18,6 +18,7 @@ from local_dictation.config import (
 class ConfigTests(unittest.TestCase):
     def test_defaults(self):
         config = AppConfig()
+        self.assertEqual(config.hotkey_toggle, "ctrl+alt+space")
         self.assertEqual(config.model_name, "large-v3")
         self.assertEqual(config.device, "cuda")
         self.assertEqual(config.compute_type, "float16")
@@ -95,9 +96,11 @@ class ConfigTests(unittest.TestCase):
 
         self.assertEqual(loaded[0].device, "cuda")
         self.assertEqual(loaded[0].model_name, "large-v3")
+        self.assertEqual(loaded[0].hotkey_toggle, "ctrl+alt+space")
         self.assertEqual(loaded[1].device, "cpu")
         self.assertEqual(loaded[1].compute_type, "int8")
         self.assertEqual(loaded[1].model_name, "small.en")
+        self.assertEqual(loaded[1].hotkey_toggle, "ctrl+alt+space")
 
     def test_resolve_model_name_uses_local_large_v3_when_present(self):
         expected = Path.cwd() / "models" / "faster-whisper-large-v3"

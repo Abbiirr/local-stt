@@ -78,7 +78,7 @@ class DictationController(QObject):
             return
 
         self.state_changed.emit("recording")
-        self.overlay_show.emit("Recording - Ctrl+Alt+D to stop, Esc to cancel")
+        self.overlay_show.emit(f"Recording - {self.config.hotkey_toggle} to stop, Esc to cancel")
 
     def stop_recording(self) -> None:
         with self._state_lock:

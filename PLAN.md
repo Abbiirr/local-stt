@@ -15,7 +15,7 @@ The locked baseline is:
 ```text
 PySide6 tray app
 draggable/closable waveform overlay
-Ctrl+Alt+D start/stop
+Ctrl+Alt+Space start/stop
 Esc cancel while recording
 English-only faster-whisper large-v3
 CUDA float16 on Windows

@@ -54,7 +54,7 @@ Implemented features:
 - PySide6 tray app.
 - Small waveform/status overlay.
 - Global hotkey bridge through Qt signals.
-- `Ctrl+Alt+D` start/stop.
+- `Ctrl+Alt+Space` start/stop.
 - `Esc` cancel.
 - Microphone capture only while recording.
 - faster-whisper transcription through CTranslate2.
@@ -109,7 +109,7 @@ validation are deferred to a later milestone.
 | Packaged WAV transcription | Pass | Console EXE transcribed generated WAV exactly after bundling `faster_whisper` data. |
 | Packaged windowed startup | Pass | Windowed EXE stayed running for the test window. |
 | Notepad paste | Pass | Inserted `Local dictation paste test` into Notepad and verified copied content. |
-| Hotkey start/cancel | Pass | `Ctrl+Alt+D` then `Esc` left app running without crash. |
+| Hotkey start/cancel | Pass | `Ctrl+Alt+Space` then `Esc` left app running without crash. |
 | Startup shortcut | Pass | Created in user Startup folder. |
 | Network observation | Pass, limited | No established TCP connections observed during local transcription. |
 | Firewall-block proof | Not run | `New-NetFirewallRule` failed with `Access is denied`. |
